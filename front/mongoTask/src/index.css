@@ -1,0 +1,17 @@
+/* Center content horizontally and vertically */
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f7fafc; /* Light gray background */
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  padding: 1.5rem; /* Padding around content */
+  background-color: #ffffff; /* White background */
+  border-radius: 0.375rem; /* Rounded corners */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+}
