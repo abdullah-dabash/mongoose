@@ -46,14 +46,13 @@ const HabitList = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/habits/${id}`);
-      setHabits(habits.filter(habit => habit._id !== id));
-      setFilteredHabits(filteredHabits.filter(habit => habit._id !== id));
+      setHabits(prevHabits => prevHabits.filter(habit => habit._id !== id));
+      setFilteredHabits(prevFilteredHabits => prevFilteredHabits.filter(habit => habit._id !== id));
     } catch (error) {
       console.error('Error deleting habit:', error);
     }
   };
 
-  // Update a habit
   const handleUpdate = async (updatedHabit) => {
     try {
       const response = await axios.put(`http://localhost:3000/api/habits/${updatedHabit._id}`, updatedHabit);
@@ -64,21 +63,15 @@ const HabitList = () => {
     }
   };
 
-  // Add a new habit
-  const handleAdd = async (newHabit) => {
-    try {
-      const response = await axios.post('http://localhost:3000/api/habits', newHabit);
-      setHabits([...habits, response.data]);
-      setFilteredHabits([...filteredHabits, response.data]);
-    } catch (error) {
-      console.error('Error adding habit:', error);
-    }
+  const handleAdd = (newHabit) => {
+    setHabits([...habits, newHabit]);
+    setFilteredHabits([...filteredHabits, newHabit]);
   };
 
   if (loading) return <div className="text-center py-4">Loading...</div>;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="max-w-4xl w-full p-6 bg-white shadow-md rounded-lg">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-900">Habit List</h2>
 

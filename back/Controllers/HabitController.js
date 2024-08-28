@@ -1,4 +1,6 @@
-const Habit = require('../model/Habit'); // Ensure this path is correct
+// Controllers/HabitController.js
+
+const Habit = require('../model/Habit');
 
 // Get all habits
 exports.getAllHabits = async (req, res) => {
@@ -6,68 +8,59 @@ exports.getAllHabits = async (req, res) => {
     const habits = await Habit.find();
     res.json(habits);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching habits', error });
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Create a new habit
 exports.createHabit = async (req, res) => {
-  const { name, description, category, tags, frequency, completed } = req.body;
+  const habit = new Habit({
+    name: req.body.name,
+    description: req.body.description,
+    category: req.body.category,
+    tags: req.body.tags,
+    frequency: req.body.frequency,
+    completed: req.body.completed // Ensure this field is included if needed
+  });
 
   try {
-    const newHabit = new Habit({
-      name,
-      description,
-      category,
-      tags,
-      frequency,
-      completed
-    });
-    await newHabit.save();
+    const newHabit = await habit.save();
     res.status(201).json(newHabit);
   } catch (error) {
-    res.status(500).json({ message: 'Error creating habit', error });
+    res.status(400).json({ message: error.message });
   }
 };
 
 // Update a habit
 exports.updateHabit = async (req, res) => {
-  const { id } = req.params;
-  const { name, description, category, tags, frequency, completed } = req.body;
-
   try {
-    const updatedHabit = await Habit.findByIdAndUpdate(id, {
-      name,
-      description,
-      category,
-      tags,
-      frequency,
-      completed
-    }, { new: true });
+    const habit = await Habit.findByIdAndUpdate(
+      req.params.id,
+      req.body, // Use req.body to update multiple fields
+      { new: true }
+    );
 
-    if (!updatedHabit) {
+    if (!habit) {
       return res.status(404).json({ message: 'Habit not found' });
     }
 
-    res.json(updatedHabit);
+    res.json(habit);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating habit', error });
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Delete a habit
 exports.deleteHabit = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const deletedHabit = await Habit.findByIdAndDelete(id);
+    const habit = await Habit.findByIdAndDelete(req.params.id);
 
-    if (!deletedHabit) {
+    if (!habit) {
       return res.status(404).json({ message: 'Habit not found' });
     }
 
-    res.json({ message: 'Habit deleted successfully' });
+    res.json({ message: 'Habit deleted' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting habit', error });
+    res.status(500).json({ message: error.message });
   }
 };
